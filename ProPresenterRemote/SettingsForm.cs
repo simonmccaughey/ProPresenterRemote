@@ -48,9 +48,40 @@ namespace ProPresenterRemote
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            if (File.Exists("config.json"))
+            {
+                var configJson = File.ReadAllText("config.json");
+                config = JsonConvert.DeserializeObject<Config>(configJson);
+            }
             refreshPPData();
+            applyConfig();
 
+        }
 
+        private void applyConfig()
+        {
+
+            txtIPAddress.Text = config.ip;
+            txtPort.Text = config.port + "";
+            setCombo(cboBeforeServiceLook, config.beforeServiceLook);
+            setCombo(cboNormalLook, config.normalLook);
+            setCombo(cboPIPProp, config.pipProp);
+            setCombo(cboBeforeServiceProp, config.beforeServiceProp);
+
+        }
+
+        private void setCombo(ComboBox combo, ItemData item)
+        {
+            if (item != null)
+            {
+                foreach (var cboItem in combo.Items)
+                {
+                    if (((ItemData)cboItem).UUID == item.UUID)
+                    {
+                        combo.SelectedItem = cboItem;
+                    }
+                }
+            }
         }
 
         private void refreshPPData()
@@ -133,6 +164,7 @@ namespace ProPresenterRemote
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             refreshPPData();
+            applyConfig();
         }
     }
 }
