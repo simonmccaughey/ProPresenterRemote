@@ -1,0 +1,15 @@
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\bin\Debug\ProPresenterRemote.exe.config
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\bin\Debug\ProPresenterRemote.exe
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\bin\Debug\ProPresenterRemote.pdb
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.csproj.AssemblyReference.cache
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.csproj.SuggestedBindingRedirects.cache
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.Properties.Resources.resources
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.csproj.GenerateResource.cache
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.exe
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.pdb
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.csproj.CopyComplete
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.ProRemote.resources
+C:\Users\Admin\source\repos\ProPresenterRemote\ProPresenterRemote\obj\Debug\ProPresenterRemote.SettingsForm.resources
