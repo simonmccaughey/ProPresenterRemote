@@ -35,7 +35,41 @@ namespace ProPresenterRemote
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            var propsTask = client.GetStringAsync("http://localhost:1025/v1/props");
+            refreshPPData();
+
+
+        }
+
+        private void refreshPPData()
+        {
+
+            List<ItemData> itemData = runRequest("http://localhost:1025/v1/props");
+
+            cboBeforeServiceProp.Items.Clear();
+            cboPIPProp.Items.Clear();
+            foreach (var item in itemData)
+            {
+                cboBeforeServiceProp.Items.Add(item);
+                cboPIPProp.Items.Add(item);
+            }
+
+            cboNormalLook.Items.Clear();
+            cboBeforeServiceLook.Items.Clear();
+            itemData = runRequest("http://localhost:1025/v1/looks");
+            foreach (var item in itemData)
+            {
+                cboBeforeServiceLook.Items.Add(item);
+                cboNormalLook.Items.Add(item);
+            }
+
+
+        }
+
+        private List<ItemData> runRequest(String url)
+        {
+            List<ItemData> itemData = new List<ItemData>();
+
+            var propsTask = client.GetStringAsync(url);
             try
             {
                 var result = propsTask.GetAwaiter().GetResult();
@@ -43,20 +77,19 @@ namespace ProPresenterRemote
 
                 var data = JsonConvert.DeserializeAnonymousType(result, new[] { new { id = new ItemData() } });
 
-                Debug.WriteLine(data);
+                //Debug.WriteLine(data);
 
-                cboBeforeServiceProp.Items.Clear();
-                cboPIPProp.Items.Clear();
                 foreach (var item in data)
                 {
-                    cboBeforeServiceProp.Items.Add(item.id);
-                    cboPIPProp.Items.Add(item.id);
+                    itemData.Add(item.id);
                 }
             }
             catch (HttpRequestException ex)
             {
                 MessageBox.Show("error connecting to propresenter: " + ex);
             }
+
+            return itemData;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
