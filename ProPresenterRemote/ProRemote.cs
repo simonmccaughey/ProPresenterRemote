@@ -27,7 +27,11 @@ namespace ProPresenterRemote
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            config = Config.ReadConfig();
+            if(config.Ip == null || config.Ip.Length == 0)
+            {
+                settingsToolStripMenuItem_Click(sender, e);
+            }
         }
 
 
@@ -36,12 +40,12 @@ namespace ProPresenterRemote
         {
             if (pipOn)
             {
-                runAndWait("http://localhost:1025/v1/prop/3787f15d-b205-4432-83e6-4bb2077948da/clear");
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/clear");
                 pipButton.BackColor = Control.DefaultBackColor;
             }
             else
             {
-                runAndWait("http://localhost:1025/v1/prop/3787f15d-b205-4432-83e6-4bb2077948da/trigger");
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/trigger");
                 pipButton.BackColor = Color.Red;
             }
             pipOn = !pipOn;
@@ -75,7 +79,11 @@ namespace ProPresenterRemote
         {
             this.Enabled = false;
             var settingsForm = new SettingsForm();
-            settingsForm.ShowDialog();
+           var result= settingsForm.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                config = Config.ReadConfig();
+            }
             this.Enabled = true;
         }
     }
