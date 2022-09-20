@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,6 +17,7 @@ namespace ProPresenterRemote
     public partial class SettingsForm : Form
     {
         private static readonly HttpClient client = new HttpClient();
+        private Config config = new Config();
 
         public SettingsForm()
         {
@@ -31,6 +33,17 @@ namespace ProPresenterRemote
             {
                 return Name;
             }
+        }
+
+        private class Config
+        {
+            public string ip;
+            public int port;
+            public ItemData beforeServiceLook;
+            public ItemData normalLook;
+            public ItemData beforeServiceProp;
+            public ItemData pipProp;
+
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -96,6 +109,30 @@ namespace ProPresenterRemote
         {
             Debug.WriteLine("pip prop    : " + ((ItemData)cboPIPProp.SelectedItem)?.Name + " " + ((ItemData)cboPIPProp.SelectedItem)?.UUID);
             Debug.WriteLine("before prop : " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.Name + " " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.UUID);
+
+
+            config.ip = txtIPAddress.Text.Trim();
+            config.port = int.Parse("0" + txtPort.Text);
+            config.pipProp = (ItemData)cboPIPProp.SelectedItem;
+            config.beforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
+            config.beforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
+            config.normalLook = (ItemData)cboNormalLook.SelectedItem;
+
+
+            var configJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            Debug.WriteLine(configJson);
+            File.WriteAllText("config.json", configJson);
+        }
+
+        private void txtPort_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            refreshPPData();
         }
     }
 }
