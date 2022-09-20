@@ -86,7 +86,7 @@
             this.Name = "ProRemote";
             this.Text = "ProRemote";
             this.TopMost = true;
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.ProRemoteForm_Load);
             this.contextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -27,26 +27,28 @@ namespace ProPresenterRemote
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             config = Config.ReadConfig();
-
-            refreshPPData();
-            applyConfig();
-
+            RefreshPPData();
+            ApplyConfig();
         }
 
-        private void applyConfig()
+        /**
+         * Apply the current config to the dialog - selects the combo items etc.
+         */
+        private void ApplyConfig()
         {
             //need to keep this variable separate, as the event fires when ip address txt is set, clearing the port config variable
             var configPort = config.Port;
+
             txtIPAddress.Text = config.Ip;
             txtPort.Text = configPort;
-            setCombo(cboBeforeServiceLook, config.BeforeServiceLook);
-            setCombo(cboNormalLook, config.NormalLook);
-            setCombo(cboPIPProp, config.PipProp);
-            setCombo(cboBeforeServiceProp, config.BeforeServiceProp);
+            SetCombo(cboBeforeServiceLook, config.BeforeServiceLook);
+            SetCombo(cboNormalLook, config.NormalLook);
+            SetCombo(cboPIPProp, config.PipProp);
+            SetCombo(cboBeforeServiceProp, config.BeforeServiceProp);
 
         }
 
-        private void setCombo(ComboBox combo, ItemData item)
+        private void SetCombo(ComboBox combo, ItemData item)
         {
             if (item != null)
             {
@@ -59,9 +61,12 @@ namespace ProPresenterRemote
                 }
             }
         }
-
-        private void refreshPPData()
+        /** 
+         * Get the latest props and looks data from propresenter.         
+         */
+        private void RefreshPPData()
         {
+            //disable all the items, in case the request fails.
             cboBeforeServiceProp.Enabled = false;
             cboPIPProp.Enabled = false;
             cboNormalLook.Enabled = false;
@@ -70,11 +75,13 @@ namespace ProPresenterRemote
 
             if (config.Ip == null || config.Ip.Length == 0)
             {
+                // if there is no ip configured, we dont try to reach it
                 return;
             }
             try
             {
-                List<ItemData> itemData = runRequest($"http://{config.Ip}:{config.Port}/v1/props");
+                //get all the props, and fill into the 2 combo boxes
+                List<ItemData> itemData = RunRequest($"http://{config.Ip}:{config.Port}/v1/props");
                 cboBeforeServiceProp.Enabled = true;
                 cboBeforeServiceProp.Items.Clear();
                 cboPIPProp.Enabled = true;
@@ -85,17 +92,20 @@ namespace ProPresenterRemote
                     cboPIPProp.Items.Add(item);
                 }
 
+                
+                //now get the looks, and fill the combo boxes
                 cboNormalLook.Enabled = true;
                 cboNormalLook.Items.Clear();
                 cboBeforeServiceLook.Enabled = true;
                 cboBeforeServiceLook.Items.Clear();
-                itemData = runRequest($"http://{config.Ip}:{config.Port}/v1/looks");
+                itemData = RunRequest($"http://{config.Ip}:{config.Port}/v1/looks");
                 foreach (var item in itemData)
                 {
                     cboBeforeServiceLook.Items.Add(item);
                     cboNormalLook.Items.Add(item);
                 }
 
+                //finally enable the save button
                 btnSave.Enabled = true;
 
             }
@@ -103,12 +113,12 @@ namespace ProPresenterRemote
             {
                 MessageBox.Show("error connecting to propresenter: " + ex);
             }
-
-
-
         }
 
-        private List<ItemData> runRequest(String url)
+        /**
+         * Run a request, and return a list of ItemData - this same format is used for looks and props (other API requests may be the same too..)
+         */
+        private List<ItemData> RunRequest(String url)
         {
             List<ItemData> itemData = new List<ItemData>();
 
@@ -119,7 +129,7 @@ namespace ProPresenterRemote
 
             var data = JsonConvert.DeserializeAnonymousType(result, new[] { new { id = new ItemData() } });
 
-            //Debug.WriteLine(data);
+            Debug.WriteLine(data);
 
             foreach (var item in data)
             {
@@ -131,29 +141,30 @@ namespace ProPresenterRemote
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Debug.WriteLine("pip prop    : " + ((ItemData)cboPIPProp.SelectedItem)?.Name + " " + ((ItemData)cboPIPProp.SelectedItem)?.UUID);
-            Debug.WriteLine("before prop : " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.Name + " " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.UUID);
 
+            //NOTE: dont need to set the ip and port, they are set as they get validated and changed in the text boxes
 
+            //get the combo box values
             config.PipProp = (ItemData)cboPIPProp.SelectedItem;
             config.BeforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
             config.BeforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
             config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
 
-
+            //save the config 
             Config.WriteConfig(config);
         }
 
         private void txtPort_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //only allow digits and control chars, there must be no alpha chars in the port
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            refreshPPData();
-            applyConfig();
+            RefreshPPData();
+            ApplyConfig();
         }
 
         private void txtIpOrPort_TextChanged(object sender, EventArgs e)

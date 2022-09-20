@@ -26,81 +26,90 @@ namespace ProPresenterRemote
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void ProRemoteForm_Load(object sender, EventArgs e)
         {
+            //read the config at startup
             config = Config.ReadConfig();
+
+            //if there is no IP address configured, open the settings dialog
             if (config.Ip == null || config.Ip.Length == 0)
             {
                 settingsToolStripMenuItem_Click(sender, e);
             }
-        }
 
+            //run a "get version" command, to check connectivity...
+            RunAndWait($"http://{config.Ip}:{config.Port}/version");
+
+        }
 
 
         private void pipButton_Click(object sender, EventArgs e)
         {
+            pipButton.Enabled = false;
             if (pipOn)
             {
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/clear");
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/clear");
                 pipButton.BackColor = Control.DefaultBackColor;
             }
             else
             {
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/trigger");
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/trigger");
                 pipButton.BackColor = Color.Red;
             }
             pipOn = !pipOn;
+
+            pipButton.Enabled = true;
         }
         private void btnBeforeService_Click(object sender, EventArgs e)
         {
+            btnBeforeService.Enabled = false;
+
             if (beforeServiceOn)
             {
-                //change the look
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/clear");
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+                //change the look to normal
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
 
-                //set the prop
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/clear");
+                //clear the prop
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/clear");
 
                 btnBeforeService.BackColor = Control.DefaultBackColor;
-
             }
             else
-            {//change the look
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/clear");
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/trigger");
-                
-                //set the prop
-                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/trigger");
+            {
+                //change the look to the before service look
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/trigger");
+
+                //set the prop for before service
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/trigger");
 
                 btnBeforeService.BackColor = Color.Red;
-
             }
             beforeServiceOn = !beforeServiceOn;
+
+            btnBeforeService.Enabled = true;
         }
 
-        private async void runAndWait(String url)
+        private void RunAndWait(String url)
         {
             try
             {
-
                 var task = client.GetStringAsync(url);
-                await task;
+                task.GetAwaiter().GetResult();
+                
                 Debug.WriteLine("complete: " + task.IsCompleted);
-
             }
             catch (HttpRequestException e)
             {
-                Debug.WriteLine("failed: " + e);
+                Debug.WriteLine("failed getting: " + url + " with exception: " + e);
+                MessageBox.Show("Error running request: " + url + " with exception: " + e);
             }
 
         }
 
 
-
-
-
-
+        /**
+         * Open the settings dialog.
+         */
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
