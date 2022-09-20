@@ -163,8 +163,10 @@ namespace ProPresenterRemote
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
+            btnRefresh.Enabled = false;
             RefreshPPData();
             ApplyConfig();
+            btnRefresh.Enabled = true;
         }
 
         private void txtIpOrPort_TextChanged(object sender, EventArgs e)
