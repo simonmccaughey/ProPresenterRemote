@@ -24,28 +24,6 @@ namespace ProPresenterRemote
             InitializeComponent();
         }
 
-        private class ItemData
-        {
-            public string UUID { get; set; }
-            public string Name { get; set; }
-
-            public override string ToString()
-            {
-                return Name;
-            }
-        }
-
-        private class Config
-        {
-            public string ip;
-            public int port;
-            public ItemData beforeServiceLook;
-            public ItemData normalLook;
-            public ItemData beforeServiceProp;
-            public ItemData pipProp;
-
-        }
-
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             if (File.Exists("config.json"))
