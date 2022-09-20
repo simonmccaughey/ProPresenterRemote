@@ -18,6 +18,7 @@ namespace ProPresenterRemote
 
         private static readonly HttpClient client = new HttpClient();
         Boolean pipOn = false;
+        Boolean beforeServiceOn = false;
         private Config config = new Config();
 
         public ProRemote()
@@ -28,7 +29,7 @@ namespace ProPresenterRemote
         private void Form1_Load(object sender, EventArgs e)
         {
             config = Config.ReadConfig();
-            if(config.Ip == null || config.Ip.Length == 0)
+            if (config.Ip == null || config.Ip.Length == 0)
             {
                 settingsToolStripMenuItem_Click(sender, e);
             }
@@ -50,6 +51,33 @@ namespace ProPresenterRemote
             }
             pipOn = !pipOn;
         }
+        private void btnBeforeService_Click(object sender, EventArgs e)
+        {
+            if (beforeServiceOn)
+            {
+                //change the look
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/clear");
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+
+                //set the prop
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/clear");
+
+                btnBeforeService.BackColor = Control.DefaultBackColor;
+
+            }
+            else
+            {//change the look
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/clear");
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/trigger");
+                
+                //set the prop
+                runAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/trigger");
+
+                btnBeforeService.BackColor = Color.Red;
+
+            }
+            beforeServiceOn = !beforeServiceOn;
+        }
 
         private async void runAndWait(String url)
         {
@@ -69,18 +97,16 @@ namespace ProPresenterRemote
         }
 
 
-        private void btnBeforeService_Click(object sender, EventArgs e)
-        {
 
-        }
+
 
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
             var settingsForm = new SettingsForm();
-           var result= settingsForm.ShowDialog();
-            if(result == DialogResult.OK)
+            var result = settingsForm.ShowDialog();
+            if (result == DialogResult.OK)
             {
                 config = Config.ReadConfig();
             }
