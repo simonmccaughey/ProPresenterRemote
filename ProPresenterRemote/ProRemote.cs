@@ -18,6 +18,7 @@ namespace ProPresenterRemote
 
         private static readonly HttpClient client = new HttpClient();
         Boolean pipOn = false;
+        private Config config = new Config();
 
         public ProRemote()
         {

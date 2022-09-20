@@ -26,11 +26,8 @@ namespace ProPresenterRemote
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            if (File.Exists("config.json"))
-            {
-                var configJson = File.ReadAllText("config.json");
-                config = JsonConvert.DeserializeObject<Config>(configJson);
-            }
+            config = Config.ReadConfig();
+
             refreshPPData();
             applyConfig();
 
@@ -144,9 +141,7 @@ namespace ProPresenterRemote
             config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
 
 
-            var configJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            Debug.WriteLine(configJson);
-            File.WriteAllText("config.json", configJson);
+            Config.WriteConfig(config);
         }
 
         private void txtPort_KeyPress(object sender, KeyPressEventArgs e)
