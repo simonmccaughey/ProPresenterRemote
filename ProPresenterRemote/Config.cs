@@ -18,11 +18,11 @@ namespace ProPresenterRemote
     }
     internal class Config
     {
-        public string ip;
-        public int port;
-        public ItemData beforeServiceLook;
-        public ItemData normalLook;
-        public ItemData beforeServiceProp;
-        public ItemData pipProp;
+        public string Ip;
+        public string Port;
+        public ItemData BeforeServiceLook;
+        public ItemData NormalLook;
+        public ItemData BeforeServiceProp;
+        public ItemData PipProp;
     }
 }

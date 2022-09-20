@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.txtIPAddress = new System.Windows.Forms.TextBox();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -51,13 +52,15 @@
             this.txtIPAddress.Name = "txtIPAddress";
             this.txtIPAddress.Size = new System.Drawing.Size(135, 20);
             this.txtIPAddress.TabIndex = 0;
+            this.txtIPAddress.TextChanged += new System.EventHandler(this.txtIpOrPort_TextChanged);
             // 
             // txtPort
             // 
             this.txtPort.Location = new System.Drawing.Point(183, 42);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(91, 20);
-            this.txtPort.TabIndex = 0;
+            this.txtPort.TabIndex = 1;
+            this.txtPort.TextChanged += new System.EventHandler(this.txtIpOrPort_TextChanged);
             this.txtPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPort_KeyPress);
             // 
             // label1
@@ -89,11 +92,12 @@
             // 
             // cboPIPProp
             // 
+            this.cboPIPProp.Enabled = false;
             this.cboPIPProp.FormattingEnabled = true;
             this.cboPIPProp.Location = new System.Drawing.Point(27, 92);
             this.cboPIPProp.Name = "cboPIPProp";
             this.cboPIPProp.Size = new System.Drawing.Size(364, 21);
-            this.cboPIPProp.TabIndex = 2;
+            this.cboPIPProp.TabIndex = 3;
             // 
             // label4
             // 
@@ -106,11 +110,12 @@
             // 
             // cboBeforeServiceProp
             // 
+            this.cboBeforeServiceProp.Enabled = false;
             this.cboBeforeServiceProp.FormattingEnabled = true;
             this.cboBeforeServiceProp.Location = new System.Drawing.Point(27, 140);
             this.cboBeforeServiceProp.Name = "cboBeforeServiceProp";
             this.cboBeforeServiceProp.Size = new System.Drawing.Size(364, 21);
-            this.cboBeforeServiceProp.TabIndex = 2;
+            this.cboBeforeServiceProp.TabIndex = 4;
             // 
             // label5
             // 
@@ -123,11 +128,12 @@
             // 
             // cboBeforeServiceLook
             // 
+            this.cboBeforeServiceLook.Enabled = false;
             this.cboBeforeServiceLook.FormattingEnabled = true;
             this.cboBeforeServiceLook.Location = new System.Drawing.Point(27, 191);
             this.cboBeforeServiceLook.Name = "cboBeforeServiceLook";
             this.cboBeforeServiceLook.Size = new System.Drawing.Size(364, 21);
-            this.cboBeforeServiceLook.TabIndex = 2;
+            this.cboBeforeServiceLook.TabIndex = 5;
             // 
             // label6
             // 
@@ -140,18 +146,20 @@
             // 
             // cboNormalLook
             // 
+            this.cboNormalLook.Enabled = false;
             this.cboNormalLook.FormattingEnabled = true;
             this.cboNormalLook.Location = new System.Drawing.Point(27, 242);
             this.cboNormalLook.Name = "cboNormalLook";
             this.cboNormalLook.Size = new System.Drawing.Size(364, 21);
-            this.cboNormalLook.TabIndex = 2;
+            this.cboNormalLook.TabIndex = 6;
             // 
             // btnSave
             // 
+            this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(225, 283);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -161,16 +169,17 @@
             this.btnCancel.Location = new System.Drawing.Point(316, 283);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnRefresh
             // 
+            this.btnRefresh.Enabled = false;
             this.btnRefresh.Location = new System.Drawing.Point(295, 40);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 4;
+            this.btnRefresh.TabIndex = 2;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
@@ -195,8 +204,11 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.txtIPAddress);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsForm";
-            this.Text = "SettingsForm";
+            this.Text = "Settings";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

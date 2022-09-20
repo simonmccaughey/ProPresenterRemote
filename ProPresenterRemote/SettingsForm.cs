@@ -38,13 +38,14 @@ namespace ProPresenterRemote
 
         private void applyConfig()
         {
-
-            txtIPAddress.Text = config.ip;
-            txtPort.Text = config.port + "";
-            setCombo(cboBeforeServiceLook, config.beforeServiceLook);
-            setCombo(cboNormalLook, config.normalLook);
-            setCombo(cboPIPProp, config.pipProp);
-            setCombo(cboBeforeServiceProp, config.beforeServiceProp);
+            //need to keep this variable separate, as the event fires when ip address txt is set, clearing the port config variable
+            var configPort = config.Port;
+            txtIPAddress.Text = config.Ip;
+            txtPort.Text = configPort;
+            setCombo(cboBeforeServiceLook, config.BeforeServiceLook);
+            setCombo(cboNormalLook, config.NormalLook);
+            setCombo(cboPIPProp, config.PipProp);
+            setCombo(cboBeforeServiceProp, config.BeforeServiceProp);
 
         }
 
@@ -64,25 +65,48 @@ namespace ProPresenterRemote
 
         private void refreshPPData()
         {
+            cboBeforeServiceProp.Enabled = false;
+            cboPIPProp.Enabled = false;
+            cboNormalLook.Enabled = false;
+            cboBeforeServiceLook.Enabled = false;
+            btnSave.Enabled = false;
 
-            List<ItemData> itemData = runRequest("http://localhost:1025/v1/props");
-
-            cboBeforeServiceProp.Items.Clear();
-            cboPIPProp.Items.Clear();
-            foreach (var item in itemData)
+            if (config.Ip == null || config.Ip.Length == 0)
             {
-                cboBeforeServiceProp.Items.Add(item);
-                cboPIPProp.Items.Add(item);
+                return;
+            }
+            try
+            {
+                List<ItemData> itemData = runRequest($"http://{config.Ip}:{config.Port}/v1/props");
+                cboBeforeServiceProp.Enabled = true;
+                cboBeforeServiceProp.Items.Clear();
+                cboPIPProp.Enabled = true;
+                cboPIPProp.Items.Clear();
+                foreach (var item in itemData)
+                {
+                    cboBeforeServiceProp.Items.Add(item);
+                    cboPIPProp.Items.Add(item);
+                }
+
+                cboNormalLook.Enabled = true;
+                cboNormalLook.Items.Clear();
+                cboBeforeServiceLook.Enabled = true;
+                cboBeforeServiceLook.Items.Clear();
+                itemData = runRequest($"http://{config.Ip}:{config.Port}/v1/looks");
+                foreach (var item in itemData)
+                {
+                    cboBeforeServiceLook.Items.Add(item);
+                    cboNormalLook.Items.Add(item);
+                }
+
+                btnSave.Enabled = true;
+
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("error connecting to propresenter: " + ex);
             }
 
-            cboNormalLook.Items.Clear();
-            cboBeforeServiceLook.Items.Clear();
-            itemData = runRequest("http://localhost:1025/v1/looks");
-            foreach (var item in itemData)
-            {
-                cboBeforeServiceLook.Items.Add(item);
-                cboNormalLook.Items.Add(item);
-            }
 
 
         }
@@ -92,23 +116,17 @@ namespace ProPresenterRemote
             List<ItemData> itemData = new List<ItemData>();
 
             var propsTask = client.GetStringAsync(url);
-            try
+
+            var result = propsTask.GetAwaiter().GetResult();
+            Debug.WriteLine(result);
+
+            var data = JsonConvert.DeserializeAnonymousType(result, new[] { new { id = new ItemData() } });
+
+            //Debug.WriteLine(data);
+
+            foreach (var item in data)
             {
-                var result = propsTask.GetAwaiter().GetResult();
-                Debug.WriteLine(result);
-
-                var data = JsonConvert.DeserializeAnonymousType(result, new[] { new { id = new ItemData() } });
-
-                //Debug.WriteLine(data);
-
-                foreach (var item in data)
-                {
-                    itemData.Add(item.id);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show("error connecting to propresenter: " + ex);
+                itemData.Add(item.id);
             }
 
             return itemData;
@@ -120,12 +138,10 @@ namespace ProPresenterRemote
             Debug.WriteLine("before prop : " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.Name + " " + ((ItemData)cboBeforeServiceProp.SelectedItem)?.UUID);
 
 
-            config.ip = txtIPAddress.Text.Trim();
-            config.port = int.Parse("0" + txtPort.Text);
-            config.pipProp = (ItemData)cboPIPProp.SelectedItem;
-            config.beforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
-            config.beforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
-            config.normalLook = (ItemData)cboNormalLook.SelectedItem;
+            config.PipProp = (ItemData)cboPIPProp.SelectedItem;
+            config.BeforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
+            config.BeforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
+            config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
 
 
             var configJson = JsonConvert.SerializeObject(config, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -143,6 +159,13 @@ namespace ProPresenterRemote
         {
             refreshPPData();
             applyConfig();
+        }
+
+        private void txtIpOrPort_TextChanged(object sender, EventArgs e)
+        {
+            btnRefresh.Enabled = (txtIPAddress.Text.Length > 0 && txtPort.Text.Length > 0);
+            config.Ip = txtIPAddress.Text.Trim();
+            config.Port = txtPort.Text;
         }
     }
 }
