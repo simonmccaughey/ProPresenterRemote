@@ -45,6 +45,9 @@ namespace ProPresenterRemote
             SetCombo(cboNormalLook, config.NormalLook);
             SetCombo(cboPIPProp, config.PipProp);
             SetCombo(cboBeforeServiceProp, config.BeforeServiceProp);
+            SetCombo(cboSpeakerLibrary, config.SpeakerNameLibrary);
+            SetCombo(cboSpeakerLook, config.SpeakerNameLook);
+            SetCombo(cboSpeakerPresentation, config.SpeakerNamePresentation);
 
         }
 
@@ -98,12 +101,25 @@ namespace ProPresenterRemote
                 cboNormalLook.Items.Clear();
                 cboBeforeServiceLook.Enabled = true;
                 cboBeforeServiceLook.Items.Clear();
+                cboSpeakerLook.Enabled = true;
+                cboSpeakerLook.Items.Clear();
                 itemData = RunRequest($"http://{config.Ip}:{config.Port}/v1/looks");
                 foreach (var item in itemData)
                 {
                     cboBeforeServiceLook.Items.Add(item);
                     cboNormalLook.Items.Add(item);
+                    cboSpeakerLook.Items.Add(item);
                 }
+
+                //now the list of libraries
+                cboSpeakerLibrary.Enabled = true;
+                cboSpeakerLibrary.Items.Clear();
+                itemData = RunRequestBasicList($"http://{config.Ip}:{config.Port}/v1/libraries");
+                foreach (var item in itemData)
+                {
+                    cboSpeakerLibrary.Items.Add(item);
+                }
+
 
                 //finally enable the save button
                 btnSave.Enabled = true;
@@ -116,7 +132,7 @@ namespace ProPresenterRemote
         }
 
         /**
-         * Run a request, and return a list of ItemData - this same format is used for looks and props (other API requests may be the same too..)
+         * Run a request, and return a list of ItemData - this same format is used for looks and props 
          */
         private List<ItemData> RunRequest(String url)
         {
@@ -138,6 +154,40 @@ namespace ProPresenterRemote
 
             return itemData;
         }
+        private List<ItemData> RunRequestBasicList(String url)
+        {
+            List<ItemData> itemData = new List<ItemData>();
+
+            var propsTask = client.GetStringAsync(url);
+
+            var result = propsTask.GetAwaiter().GetResult();
+            Debug.WriteLine(result);
+
+            var data = JsonConvert.DeserializeAnonymousType(result, new[] { new ItemData() });
+
+            Debug.WriteLine(data);
+
+            itemData.AddRange(data);
+
+            return itemData;
+        }
+        private List<ItemData> RunRequestItemList(String url)
+        {
+            List<ItemData> itemData = new List<ItemData>();
+
+            var propsTask = client.GetStringAsync(url);
+
+            var result = propsTask.GetAwaiter().GetResult();
+            Debug.WriteLine(result);
+
+            var data = JsonConvert.DeserializeAnonymousType(result, new {items = new[] { new ItemData() } });
+
+            Debug.WriteLine(data);
+
+            itemData.AddRange(data.items);
+
+            return itemData;
+        }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -149,6 +199,9 @@ namespace ProPresenterRemote
             config.BeforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
             config.BeforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
             config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
+            config.SpeakerNameLibrary = (ItemData)cboSpeakerLibrary.SelectedItem;
+            config.SpeakerNameLook = (ItemData)cboSpeakerLook.SelectedItem;
+            config.SpeakerNamePresentation = (ItemData)cboSpeakerPresentation.SelectedItem;
 
             //save the config 
             Config.WriteConfig(config);
@@ -174,6 +227,23 @@ namespace ProPresenterRemote
             btnRefresh.Enabled = (txtIPAddress.Text.Length > 0 && txtPort.Text.Length > 0);
             config.Ip = txtIPAddress.Text.Trim();
             config.Port = txtPort.Text;
+        }
+
+        private void cboSpeakerLibrary_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cboSpeakerPresentation.Enabled = true;
+            cboSpeakerPresentation.Items.Clear();
+            cboSpeakerPresentation.Text = "";
+            if (cboSpeakerLibrary.SelectedItem != null)
+            {
+                var uuid = ((ItemData)cboSpeakerLibrary.SelectedItem).UUID;
+
+                List<ItemData> itemData = RunRequestItemList($"http://{config.Ip}:{config.Port}/v1/library/{uuid}");
+                foreach (var item in itemData)
+                {
+                    cboSpeakerPresentation.Items.Add(item);
+                }
+            }
         }
     }
 }

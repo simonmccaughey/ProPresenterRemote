@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -89,6 +90,27 @@ namespace ProPresenterRemote
             btnBeforeService.Enabled = true;
         }
 
+        private void btnSpeakerName_Click(object sender, EventArgs e)
+        {
+            btnSpeakerName.Enabled = false;
+            // run the speaker name animation...
+            //change the look 
+            RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.SpeakerNameLook.UUID}/trigger");
+
+            RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+
+            Thread.Sleep(5000);
+
+            RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+
+            Thread.Sleep(2000);
+
+            //change the look back to normal
+            RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+
+            btnSpeakerName.Enabled = true;
+        }
+
         private void RunAndWait(String url)
         {
             try
@@ -121,5 +143,6 @@ namespace ProPresenterRemote
             }
             this.Enabled = true;
         }
+
     }
 }

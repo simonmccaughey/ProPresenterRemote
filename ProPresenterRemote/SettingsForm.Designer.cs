@@ -44,6 +44,12 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cboSpeakerLibrary = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cboSpeakerPresentation = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cboSpeakerLook = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // txtIPAddress
@@ -155,9 +161,10 @@
             // 
             // btnSave
             // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Enabled = false;
-            this.btnSave.Location = new System.Drawing.Point(225, 283);
+            this.btnSave.Location = new System.Drawing.Point(225, 485);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 7;
@@ -167,8 +174,9 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(316, 283);
+            this.btnCancel.Location = new System.Drawing.Point(316, 485);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 8;
@@ -186,14 +194,75 @@
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(24, 281);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(112, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Speaker Name Library";
+            // 
+            // cboSpeakerLibrary
+            // 
+            this.cboSpeakerLibrary.Enabled = false;
+            this.cboSpeakerLibrary.FormattingEnabled = true;
+            this.cboSpeakerLibrary.Location = new System.Drawing.Point(27, 297);
+            this.cboSpeakerLibrary.Name = "cboSpeakerLibrary";
+            this.cboSpeakerLibrary.Size = new System.Drawing.Size(364, 21);
+            this.cboSpeakerLibrary.TabIndex = 6;
+            this.cboSpeakerLibrary.SelectedIndexChanged += new System.EventHandler(this.cboSpeakerLibrary_SelectedIndexChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(24, 327);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(140, 13);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Speaker Name Presentation";
+            // 
+            // cboSpeakerPresentation
+            // 
+            this.cboSpeakerPresentation.Enabled = false;
+            this.cboSpeakerPresentation.FormattingEnabled = true;
+            this.cboSpeakerPresentation.Location = new System.Drawing.Point(27, 343);
+            this.cboSpeakerPresentation.Name = "cboSpeakerPresentation";
+            this.cboSpeakerPresentation.Size = new System.Drawing.Size(364, 21);
+            this.cboSpeakerPresentation.TabIndex = 6;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(24, 377);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(105, 13);
+            this.label9.TabIndex = 1;
+            this.label9.Text = "Speaker Name Look";
+            // 
+            // cboSpeakerLook
+            // 
+            this.cboSpeakerLook.Enabled = false;
+            this.cboSpeakerLook.FormattingEnabled = true;
+            this.cboSpeakerLook.Location = new System.Drawing.Point(27, 393);
+            this.cboSpeakerLook.Name = "cboSpeakerLook";
+            this.cboSpeakerLook.Size = new System.Drawing.Size(364, 21);
+            this.cboSpeakerLook.TabIndex = 6;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(421, 336);
+            this.ClientSize = new System.Drawing.Size(421, 531);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.cboSpeakerLook);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.cboSpeakerPresentation);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.cboSpeakerLibrary);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.cboNormalLook);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cboBeforeServiceLook);
@@ -234,5 +303,11 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox cboSpeakerLibrary;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox cboSpeakerPresentation;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cboSpeakerLook;
     }
 }

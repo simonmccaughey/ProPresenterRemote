@@ -27,6 +27,10 @@ namespace ProPresenterRemote
         public ItemData NormalLook;
         public ItemData BeforeServiceProp;
         public ItemData PipProp;
+        public ItemData SpeakerNameLibrary;
+        public ItemData SpeakerNamePresentation;
+        public ItemData SpeakerNameLook;
+
 
         internal static Config ReadConfig()
         {
