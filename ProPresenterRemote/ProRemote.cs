@@ -20,6 +20,8 @@ namespace ProPresenterRemote
         private static readonly HttpClient client = new HttpClient();
         Boolean pipOn = false;
         Boolean beforeServiceOn = false;
+        Boolean SpeakerNameOn = false;
+
         private Config config = new Config();
 
         public ProRemote()
@@ -93,20 +95,30 @@ namespace ProPresenterRemote
         private void btnSpeakerName_Click(object sender, EventArgs e)
         {
             btnSpeakerName.Enabled = false;
-            // run the speaker name animation...
-            //change the look 
-            RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.SpeakerNameLook.UUID}/trigger");
 
-            RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+            if (SpeakerNameOn)
+            {
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
 
-            Thread.Sleep(5000);
+                Thread.Sleep(config.SpeakerSleepMilliseconds);
 
-            RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+                //change the look back to normal
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+                btnSpeakerName.BackColor = Control.DefaultBackColor;
 
-            Thread.Sleep(2000);
+            }
+            else
+            {
+                // run the speaker name animation...
+                //change the look 
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.SpeakerNameLook.UUID}/trigger");
 
-            //change the look back to normal
-            RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+                RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+                btnSpeakerName.BackColor = Color.Red;
+
+            }
+
+            SpeakerNameOn = !SpeakerNameOn;
 
             btnSpeakerName.Enabled = true;
         }

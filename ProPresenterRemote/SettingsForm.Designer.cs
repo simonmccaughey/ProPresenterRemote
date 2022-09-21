@@ -50,6 +50,8 @@
             this.cboSpeakerPresentation = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.cboSpeakerLook = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtSpeakerNameDelayMillis = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtIPAddress
@@ -249,11 +251,30 @@
             this.cboSpeakerLook.Size = new System.Drawing.Size(364, 21);
             this.cboSpeakerLook.TabIndex = 6;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(24, 426);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(147, 13);
+            this.label10.TabIndex = 9;
+            this.label10.Text = "Speaker Name Off Delay (ms)";
+            // 
+            // txtSpeakerNameDelayMillis
+            // 
+            this.txtSpeakerNameDelayMillis.Location = new System.Drawing.Point(26, 442);
+            this.txtSpeakerNameDelayMillis.Name = "txtSpeakerNameDelayMillis";
+            this.txtSpeakerNameDelayMillis.Size = new System.Drawing.Size(100, 20);
+            this.txtSpeakerNameDelayMillis.TabIndex = 10;
+            this.txtSpeakerNameDelayMillis.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPort_KeyPress);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(421, 531);
+            this.Controls.Add(this.txtSpeakerNameDelayMillis);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
@@ -309,5 +330,7 @@
         private System.Windows.Forms.ComboBox cboSpeakerPresentation;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cboSpeakerLook;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txtSpeakerNameDelayMillis;
     }
 }
