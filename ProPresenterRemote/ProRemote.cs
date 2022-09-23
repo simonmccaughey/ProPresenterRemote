@@ -100,7 +100,7 @@ namespace ProPresenterRemote
             {
                 RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
 
-                Thread.Sleep(config.SpeakerSleepMilliseconds);
+                MessageBox.Show("Take 'on air' off now");
 
                 //change the look back to normal
                 RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
@@ -112,6 +112,8 @@ namespace ProPresenterRemote
                 // run the speaker name animation...
                 //change the look 
                 RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.SpeakerNameLook.UUID}/trigger");
+
+                MessageBox.Show("Put 'on air' on now");
 
                 RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
                 btnSpeakerName.BackColor = Color.Red;

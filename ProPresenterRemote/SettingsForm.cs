@@ -48,7 +48,6 @@ namespace ProPresenterRemote
             SetCombo(cboSpeakerLibrary, config.SpeakerNameLibrary);
             SetCombo(cboSpeakerLook, config.SpeakerNameLook);
             SetCombo(cboSpeakerPresentation, config.SpeakerNamePresentation);
-            txtSpeakerNameDelayMillis.Text = "" + config.SpeakerSleepMilliseconds;
 
         }
 
@@ -203,7 +202,6 @@ namespace ProPresenterRemote
             config.SpeakerNameLibrary = (ItemData)cboSpeakerLibrary.SelectedItem;
             config.SpeakerNameLook = (ItemData)cboSpeakerLook.SelectedItem;
             config.SpeakerNamePresentation = (ItemData)cboSpeakerPresentation.SelectedItem;
-            config.SpeakerSleepMilliseconds = int.Parse("0" + txtSpeakerNameDelayMillis.Text);
 
             //save the config 
             Config.WriteConfig(config);

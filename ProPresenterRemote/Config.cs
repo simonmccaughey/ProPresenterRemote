@@ -30,8 +30,6 @@ namespace ProPresenterRemote
         public ItemData SpeakerNameLibrary;
         public ItemData SpeakerNamePresentation;
         public ItemData SpeakerNameLook;
-        public int SpeakerSleepMilliseconds;
-
 
         internal static Config ReadConfig()
         {
