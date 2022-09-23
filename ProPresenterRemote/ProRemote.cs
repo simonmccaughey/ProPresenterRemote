@@ -31,6 +31,8 @@ namespace ProPresenterRemote
 
         private void ProRemoteForm_Load(object sender, EventArgs e)
         {
+            RestoreState();
+
             //read the config at startup
             config = Config.ReadConfig();
 
@@ -44,7 +46,10 @@ namespace ProPresenterRemote
             RunAndWait($"http://{config.Ip}:{config.Port}/version");
 
         }
-
+        private void ProRemote_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveState();
+        }
 
         private void pipButton_Click(object sender, EventArgs e)
         {
@@ -157,6 +162,33 @@ namespace ProPresenterRemote
             }
             this.Enabled = true;
         }
+
+        private void SaveState()
+        {
+            if (WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.MainFormLocation = Location;
+                Properties.Settings.Default.MainFormSize = Size;
+            }
+            else
+            {
+                Properties.Settings.Default.MainFormLocation = RestoreBounds.Location;
+                Properties.Settings.Default.MainFormSize = RestoreBounds.Size;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void RestoreState()
+        {
+            if (Properties.Settings.Default.MainFormSize == new Size(0, 0))
+            {
+                return; // state has never been saved
+            }
+            StartPosition = FormStartPosition.Manual;
+            Location = Properties.Settings.Default.MainFormLocation;
+            Size = Properties.Settings.Default.MainFormSize;
+        }
+
 
     }
 }

@@ -127,6 +127,7 @@
             this.Name = "ProRemote";
             this.Text = "ProRemote";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProRemote_FormClosing);
             this.Load += new System.EventHandler(this.ProRemoteForm_Load);
             this.contextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
