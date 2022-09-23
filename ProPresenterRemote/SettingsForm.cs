@@ -16,8 +16,8 @@ namespace ProPresenterRemote
 {
     public partial class SettingsForm : Form
     {
-        private static readonly HttpClient client = new HttpClient();
-        private Config config = new Config();
+        private static readonly HttpClient Client = new HttpClient();
+        private Config _config = new Config();
 
         public SettingsForm()
         {
@@ -26,8 +26,8 @@ namespace ProPresenterRemote
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            config = Config.ReadConfig();
-            RefreshPPData();
+            _config = Config.ReadConfig();
+            RefreshPpData();
             ApplyConfig();
         }
 
@@ -37,17 +37,17 @@ namespace ProPresenterRemote
         private void ApplyConfig()
         {
             //need to keep this variable separate, as the event fires when ip address txt is set, clearing the port config variable
-            var configPort = config.Port;
+            var configPort = _config.Port;
 
-            txtIPAddress.Text = config.Ip;
+            txtIPAddress.Text = _config.Ip;
             txtPort.Text = configPort;
-            SetCombo(cboBeforeServiceLook, config.BeforeServiceLook);
-            SetCombo(cboNormalLook, config.NormalLook);
-            SetCombo(cboPIPProp, config.PipProp);
-            SetCombo(cboBeforeServiceProp, config.BeforeServiceProp);
-            SetCombo(cboSpeakerLibrary, config.SpeakerNameLibrary);
-            SetCombo(cboSpeakerLook, config.SpeakerNameLook);
-            SetCombo(cboSpeakerPresentation, config.SpeakerNamePresentation);
+            SetCombo(cboBeforeServiceLook, _config.BeforeServiceLook);
+            SetCombo(cboNormalLook, _config.NormalLook);
+            SetCombo(cboPIPProp, _config.PipProp);
+            SetCombo(cboBeforeServiceProp, _config.BeforeServiceProp);
+            SetCombo(cboSpeakerLibrary, _config.SpeakerNameLibrary);
+            SetCombo(cboSpeakerLook, _config.SpeakerNameLook);
+            SetCombo(cboSpeakerPresentation, _config.SpeakerNamePresentation);
 
         }
 
@@ -57,7 +57,7 @@ namespace ProPresenterRemote
             {
                 foreach (var cboItem in combo.Items)
                 {
-                    if (((ItemData)cboItem).UUID == item.UUID)
+                    if (((ItemData)cboItem).Uuid == item.Uuid)
                     {
                         combo.SelectedItem = cboItem;
                     }
@@ -65,9 +65,9 @@ namespace ProPresenterRemote
             }
         }
         /** 
-         * Get the latest props and looks data from propresenter.         
+         * Get the latest props and looks data from ProPresenter.         
          */
-        private void RefreshPPData()
+        private void RefreshPpData()
         {
             //disable all the items, in case the request fails.
             cboBeforeServiceProp.Enabled = false;
@@ -76,15 +76,15 @@ namespace ProPresenterRemote
             cboBeforeServiceLook.Enabled = false;
             btnSave.Enabled = false;
 
-            if (config.Ip == null || config.Ip.Length == 0)
+            if (string.IsNullOrEmpty(_config.Ip))
             {
-                // if there is no ip configured, we dont try to reach it
+                // if there is no ip configured, we don't try to reach it
                 return;
             }
             try
             {
                 //get all the props, and fill into the 2 combo boxes
-                List<ItemData> itemData = RunRequest($"http://{config.Ip}:{config.Port}/v1/props");
+                List<ItemData> itemData = RunRequest($"http://{_config.Ip}:{_config.Port}/v1/props");
                 cboBeforeServiceProp.Enabled = true;
                 cboBeforeServiceProp.Items.Clear();
                 cboPIPProp.Enabled = true;
@@ -95,7 +95,7 @@ namespace ProPresenterRemote
                     cboPIPProp.Items.Add(item);
                 }
 
-                
+
                 //now get the looks, and fill the combo boxes
                 cboNormalLook.Enabled = true;
                 cboNormalLook.Items.Clear();
@@ -103,7 +103,7 @@ namespace ProPresenterRemote
                 cboBeforeServiceLook.Items.Clear();
                 cboSpeakerLook.Enabled = true;
                 cboSpeakerLook.Items.Clear();
-                itemData = RunRequest($"http://{config.Ip}:{config.Port}/v1/looks");
+                itemData = RunRequest($"http://{_config.Ip}:{_config.Port}/v1/looks");
                 foreach (var item in itemData)
                 {
                     cboBeforeServiceLook.Items.Add(item);
@@ -114,7 +114,7 @@ namespace ProPresenterRemote
                 //now the list of libraries
                 cboSpeakerLibrary.Enabled = true;
                 cboSpeakerLibrary.Items.Clear();
-                itemData = RunRequestBasicList($"http://{config.Ip}:{config.Port}/v1/libraries");
+                itemData = RunRequestBasicList($"http://{_config.Ip}:{_config.Port}/v1/libraries");
                 foreach (var item in itemData)
                 {
                     cboSpeakerLibrary.Items.Add(item);
@@ -127,18 +127,18 @@ namespace ProPresenterRemote
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show("error connecting to propresenter: " + ex);
+                MessageBox.Show($@"error connecting to ProPresenter: {ex}");
             }
         }
 
         /**
          * Run a request, and return a list of ItemData - this same format is used for looks and props 
          */
-        private List<ItemData> RunRequest(String url)
+        private List<ItemData> RunRequest(string url)
         {
-            List<ItemData> itemData = new List<ItemData>();
+            var itemData = new List<ItemData>();
 
-            var propsTask = client.GetStringAsync(url);
+            var propsTask = Client.GetStringAsync(url);
 
             var result = propsTask.GetAwaiter().GetResult();
             Debug.WriteLine(result);
@@ -147,18 +147,18 @@ namespace ProPresenterRemote
 
             Debug.WriteLine(data);
 
-            foreach (var item in data)
+            if (data != null)
             {
-                itemData.Add(item.id);
+                itemData.AddRange(data.Select(item => item.id));
             }
 
             return itemData;
         }
-        private List<ItemData> RunRequestBasicList(String url)
+        private static List<ItemData> RunRequestBasicList(string url)
         {
-            List<ItemData> itemData = new List<ItemData>();
+            var itemData = new List<ItemData>();
 
-            var propsTask = client.GetStringAsync(url);
+            var propsTask = Client.GetStringAsync(url);
 
             var result = propsTask.GetAwaiter().GetResult();
             Debug.WriteLine(result);
@@ -167,24 +167,24 @@ namespace ProPresenterRemote
 
             Debug.WriteLine(data);
 
-            itemData.AddRange(data);
+            if (data != null) { itemData.AddRange(data); }
 
             return itemData;
         }
-        private List<ItemData> RunRequestItemList(String url)
+        private static List<ItemData> RunRequestItemList(string url)
         {
-            List<ItemData> itemData = new List<ItemData>();
+            var itemData = new List<ItemData>();
 
-            var propsTask = client.GetStringAsync(url);
+            var propsTask = Client.GetStringAsync(url);
 
             var result = propsTask.GetAwaiter().GetResult();
             Debug.WriteLine(result);
 
-            var data = JsonConvert.DeserializeAnonymousType(result, new {items = new[] { new ItemData() } });
+            var data = JsonConvert.DeserializeAnonymousType(result, new { items = new[] { new ItemData() } });
 
             Debug.WriteLine(data);
 
-            itemData.AddRange(data.items);
+            if (data != null) { itemData.AddRange(data.items); }
 
             return itemData;
         }
@@ -192,19 +192,19 @@ namespace ProPresenterRemote
         private void btnSave_Click(object sender, EventArgs e)
         {
 
-            //NOTE: dont need to set the ip and port, they are set as they get validated and changed in the text boxes
+            //NOTE: don't need to set the ip and port, they are set as they get validated and changed in the text boxes
 
             //get the combo box values
-            config.PipProp = (ItemData)cboPIPProp.SelectedItem;
-            config.BeforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
-            config.BeforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
-            config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
-            config.SpeakerNameLibrary = (ItemData)cboSpeakerLibrary.SelectedItem;
-            config.SpeakerNameLook = (ItemData)cboSpeakerLook.SelectedItem;
-            config.SpeakerNamePresentation = (ItemData)cboSpeakerPresentation.SelectedItem;
+            _config.PipProp = (ItemData)cboPIPProp.SelectedItem;
+            _config.BeforeServiceProp = (ItemData)cboBeforeServiceProp.SelectedItem;
+            _config.BeforeServiceLook = (ItemData)cboBeforeServiceLook.SelectedItem;
+            _config.NormalLook = (ItemData)cboNormalLook.SelectedItem;
+            _config.SpeakerNameLibrary = (ItemData)cboSpeakerLibrary.SelectedItem;
+            _config.SpeakerNameLook = (ItemData)cboSpeakerLook.SelectedItem;
+            _config.SpeakerNamePresentation = (ItemData)cboSpeakerPresentation.SelectedItem;
 
             //save the config 
-            Config.WriteConfig(config);
+            Config.WriteConfig(_config);
         }
 
         private void txtPort_KeyPress(object sender, KeyPressEventArgs e)
@@ -217,7 +217,7 @@ namespace ProPresenterRemote
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             btnRefresh.Enabled = false;
-            RefreshPPData();
+            RefreshPpData();
             ApplyConfig();
             btnRefresh.Enabled = true;
         }
@@ -225,8 +225,8 @@ namespace ProPresenterRemote
         private void txtIpOrPort_TextChanged(object sender, EventArgs e)
         {
             btnRefresh.Enabled = (txtIPAddress.Text.Length > 0 && txtPort.Text.Length > 0);
-            config.Ip = txtIPAddress.Text.Trim();
-            config.Port = txtPort.Text;
+            _config.Ip = txtIPAddress.Text.Trim();
+            _config.Port = txtPort.Text;
         }
 
         private void cboSpeakerLibrary_SelectedIndexChanged(object sender, EventArgs e)
@@ -236,9 +236,9 @@ namespace ProPresenterRemote
             cboSpeakerPresentation.Text = "";
             if (cboSpeakerLibrary.SelectedItem != null)
             {
-                var uuid = ((ItemData)cboSpeakerLibrary.SelectedItem).UUID;
+                var uuid = ((ItemData)cboSpeakerLibrary.SelectedItem).Uuid;
 
-                List<ItemData> itemData = RunRequestItemList($"http://{config.Ip}:{config.Port}/v1/library/{uuid}");
+                var itemData = RunRequestItemList($"http://{_config.Ip}:{_config.Port}/v1/library/{uuid}");
                 foreach (var item in itemData)
                 {
                     cboSpeakerPresentation.Items.Add(item);

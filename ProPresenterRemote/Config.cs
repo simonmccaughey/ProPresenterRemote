@@ -11,7 +11,7 @@ namespace ProPresenterRemote
 {
     internal class ItemData
     {
-        public string UUID { get; set; }
+        public string Uuid { get; set; }
         public string Name { get; set; }
 
         public override string ToString()

@@ -17,12 +17,12 @@ namespace ProPresenterRemote
     public partial class ProRemote : Form
     {
 
-        private static readonly HttpClient client = new HttpClient();
-        Boolean pipOn = false;
-        Boolean beforeServiceOn = false;
-        Boolean SpeakerNameOn = false;
+        private static readonly HttpClient Client = new HttpClient();
+        private bool _pipOn = false;
+        private bool _beforeServiceOn = false;
+        private bool _speakerNameOn = false;
 
-        private Config config = new Config();
+        private Config _config = new Config();
 
         public ProRemote()
         {
@@ -34,16 +34,16 @@ namespace ProPresenterRemote
             RestoreState();
 
             //read the config at startup
-            config = Config.ReadConfig();
+            _config = Config.ReadConfig();
 
             //if there is no IP address configured, open the settings dialog
-            if (config.Ip == null || config.Ip.Length == 0)
+            if (string.IsNullOrEmpty(_config.Ip))
             {
                 settingsToolStripMenuItem_Click(sender, e);
             }
 
             //run a "get version" command, to check connectivity...
-            RunAndWait($"http://{config.Ip}:{config.Port}/version");
+            RunAndWait($"http://{_config.Ip}:{_config.Port}/version");
 
         }
         private void ProRemote_FormClosing(object sender, FormClosingEventArgs e)
@@ -54,17 +54,17 @@ namespace ProPresenterRemote
         private void pipButton_Click(object sender, EventArgs e)
         {
             pipButton.Enabled = false;
-            if (pipOn)
+            if (_pipOn)
             {
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/clear");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/prop/{_config.PipProp.Uuid}/clear");
                 pipButton.BackColor = Control.DefaultBackColor;
             }
             else
             {
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.PipProp.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/prop/{_config.PipProp.Uuid}/trigger");
                 pipButton.BackColor = Color.Red;
             }
-            pipOn = !pipOn;
+            _pipOn = !_pipOn;
 
             pipButton.Enabled = true;
         }
@@ -72,27 +72,27 @@ namespace ProPresenterRemote
         {
             btnBeforeService.Enabled = false;
 
-            if (beforeServiceOn)
+            if (_beforeServiceOn)
             {
                 //change the look to normal
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.NormalLook.Uuid}/trigger");
 
                 //clear the prop
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/clear");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/prop/{_config.BeforeServiceProp.Uuid}/clear");
 
                 btnBeforeService.BackColor = Control.DefaultBackColor;
             }
             else
             {
                 //change the look to the before service look
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.BeforeServiceLook.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.BeforeServiceLook.Uuid}/trigger");
 
                 //set the prop for before service
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/prop/{config.BeforeServiceProp.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/prop/{_config.BeforeServiceProp.Uuid}/trigger");
 
                 btnBeforeService.BackColor = Color.Red;
             }
-            beforeServiceOn = !beforeServiceOn;
+            _beforeServiceOn = !_beforeServiceOn;
 
             btnBeforeService.Enabled = true;
         }
@@ -101,14 +101,14 @@ namespace ProPresenterRemote
         {
             btnSpeakerName.Enabled = false;
 
-            if (SpeakerNameOn)
+            if (_speakerNameOn)
             {
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/library/{_config.SpeakerNameLibrary.Uuid}/{_config.SpeakerNamePresentation.Uuid}/trigger");
 
-                MessageBox.Show("Take 'on air' off now");
+                MessageBox.Show(@"Take 'on air' off now");
 
                 //change the look back to normal
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.NormalLook.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.NormalLook.Uuid}/trigger");
                 btnSpeakerName.BackColor = Control.DefaultBackColor;
 
             }
@@ -116,16 +116,16 @@ namespace ProPresenterRemote
             {
                 // run the speaker name animation...
                 //change the look 
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/look/{config.SpeakerNameLook.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.SpeakerNameLook.Uuid}/trigger");
 
-                MessageBox.Show("Put 'on air' on now");
+                MessageBox.Show(@"Put 'on air' on now");
 
-                RunAndWait($"http://{config.Ip}:{config.Port}/v1/library/{config.SpeakerNameLibrary.UUID}/{config.SpeakerNamePresentation.UUID}/trigger");
+                RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/library/{_config.SpeakerNameLibrary.Uuid}/{_config.SpeakerNamePresentation.Uuid}/trigger");
                 btnSpeakerName.BackColor = Color.Red;
 
             }
 
-            SpeakerNameOn = !SpeakerNameOn;
+            _speakerNameOn = !_speakerNameOn;
 
             btnSpeakerName.Enabled = true;
         }
@@ -134,15 +134,15 @@ namespace ProPresenterRemote
         {
             try
             {
-                var task = client.GetStringAsync(url);
+                var task = Client.GetStringAsync(url);
                 task.GetAwaiter().GetResult();
                 
                 Debug.WriteLine("complete: " + task.IsCompleted);
             }
             catch (HttpRequestException e)
             {
-                Debug.WriteLine("failed getting: " + url + " with exception: " + e);
-                MessageBox.Show("Error running request: " + url + " with exception: " + e);
+                Debug.WriteLine($@"Error running request: {url} with exception: {e}");
+                MessageBox.Show($@"Error running request: {url} with exception: {e}");
             }
 
         }
@@ -158,7 +158,7 @@ namespace ProPresenterRemote
             var result = settingsForm.ShowDialog();
             if (result == DialogResult.OK)
             {
-                config = Config.ReadConfig();
+                _config = Config.ReadConfig();
             }
             this.Enabled = true;
         }
