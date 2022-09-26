@@ -50,6 +50,7 @@
             this.cboSpeakerPresentation = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.cboSpeakerLook = new System.Windows.Forms.ComboBox();
+            this.cbClearSlideAfterSpeaker = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txtIPAddress
@@ -92,9 +93,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(24, 76);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.Size = new System.Drawing.Size(139, 13);
             this.label3.TabIndex = 1;
-            this.label3.Text = "PIP Prop";
+            this.label3.Text = "Picture In Picture (PIP) Prop";
             // 
             // cboPIPProp
             // 
@@ -108,7 +109,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 124);
+            this.label4.Location = new System.Drawing.Point(24, 128);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(102, 13);
             this.label4.TabIndex = 1;
@@ -118,7 +119,7 @@
             // 
             this.cboBeforeServiceProp.Enabled = false;
             this.cboBeforeServiceProp.FormattingEnabled = true;
-            this.cboBeforeServiceProp.Location = new System.Drawing.Point(27, 140);
+            this.cboBeforeServiceProp.Location = new System.Drawing.Point(27, 144);
             this.cboBeforeServiceProp.Name = "cboBeforeServiceProp";
             this.cboBeforeServiceProp.Size = new System.Drawing.Size(364, 21);
             this.cboBeforeServiceProp.TabIndex = 4;
@@ -126,7 +127,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(24, 175);
+            this.label5.Location = new System.Drawing.Point(24, 172);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(104, 13);
             this.label5.TabIndex = 1;
@@ -136,7 +137,7 @@
             // 
             this.cboBeforeServiceLook.Enabled = false;
             this.cboBeforeServiceLook.FormattingEnabled = true;
-            this.cboBeforeServiceLook.Location = new System.Drawing.Point(27, 191);
+            this.cboBeforeServiceLook.Location = new System.Drawing.Point(27, 188);
             this.cboBeforeServiceLook.Name = "cboBeforeServiceLook";
             this.cboBeforeServiceLook.Size = new System.Drawing.Size(364, 21);
             this.cboBeforeServiceLook.TabIndex = 5;
@@ -164,7 +165,7 @@
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Enabled = false;
-            this.btnSave.Location = new System.Drawing.Point(225, 433);
+            this.btnSave.Location = new System.Drawing.Point(226, 462);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 7;
@@ -176,7 +177,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(316, 433);
+            this.btnCancel.Location = new System.Drawing.Point(317, 462);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 8;
@@ -234,7 +235,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(24, 377);
+            this.label9.Location = new System.Drawing.Point(24, 373);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(105, 13);
             this.label9.TabIndex = 1;
@@ -244,16 +245,27 @@
             // 
             this.cboSpeakerLook.Enabled = false;
             this.cboSpeakerLook.FormattingEnabled = true;
-            this.cboSpeakerLook.Location = new System.Drawing.Point(27, 393);
+            this.cboSpeakerLook.Location = new System.Drawing.Point(27, 389);
             this.cboSpeakerLook.Name = "cboSpeakerLook";
             this.cboSpeakerLook.Size = new System.Drawing.Size(364, 21);
             this.cboSpeakerLook.TabIndex = 6;
+            // 
+            // cbClearSlideAfterSpeaker
+            // 
+            this.cbClearSlideAfterSpeaker.AutoSize = true;
+            this.cbClearSlideAfterSpeaker.Location = new System.Drawing.Point(27, 416);
+            this.cbClearSlideAfterSpeaker.Name = "cbClearSlideAfterSpeaker";
+            this.cbClearSlideAfterSpeaker.Size = new System.Drawing.Size(220, 17);
+            this.cbClearSlideAfterSpeaker.TabIndex = 9;
+            this.cbClearSlideAfterSpeaker.Text = "Clear Slide After Speaker Name Removal";
+            this.cbClearSlideAfterSpeaker.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(421, 479);
+            this.ClientSize = new System.Drawing.Size(421, 497);
+            this.Controls.Add(this.cbClearSlideAfterSpeaker);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
@@ -309,5 +321,6 @@
         private System.Windows.Forms.ComboBox cboSpeakerPresentation;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cboSpeakerLook;
+        private System.Windows.Forms.CheckBox cbClearSlideAfterSpeaker;
     }
 }

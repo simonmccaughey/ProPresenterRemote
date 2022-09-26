@@ -107,8 +107,15 @@ namespace ProPresenterRemote
 
                 MessageBox.Show(@"Take 'on air' off now");
 
+                //clear the slide, if configured
+                if (_config.SpeakerNameClearSlide)
+                {
+                    RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/clear/layer/slide");
+                }
+
                 //change the look back to normal
                 RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.NormalLook.Uuid}/trigger");
+
                 btnSpeakerName.BackColor = Control.DefaultBackColor;
 
             }

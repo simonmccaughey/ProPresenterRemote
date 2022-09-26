@@ -30,6 +30,7 @@ namespace ProPresenterRemote
         public ItemData SpeakerNameLibrary;
         public ItemData SpeakerNamePresentation;
         public ItemData SpeakerNameLook;
+        public bool SpeakerNameClearSlide;
 
         internal static Config ReadConfig()
         {

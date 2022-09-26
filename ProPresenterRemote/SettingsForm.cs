@@ -48,6 +48,7 @@ namespace ProPresenterRemote
             SetCombo(cboSpeakerLibrary, _config.SpeakerNameLibrary);
             SetCombo(cboSpeakerLook, _config.SpeakerNameLook);
             SetCombo(cboSpeakerPresentation, _config.SpeakerNamePresentation);
+            cbClearSlideAfterSpeaker.Checked = _config.SpeakerNameClearSlide;
 
         }
 
@@ -75,6 +76,7 @@ namespace ProPresenterRemote
             cboNormalLook.Enabled = false;
             cboBeforeServiceLook.Enabled = false;
             btnSave.Enabled = false;
+            cbClearSlideAfterSpeaker.Enabled = false;
 
             if (string.IsNullOrEmpty(_config.Ip))
             {
@@ -120,6 +122,8 @@ namespace ProPresenterRemote
                     cboSpeakerLibrary.Items.Add(item);
                 }
 
+                cbClearSlideAfterSpeaker.Enabled = true;
+                cbClearSlideAfterSpeaker.Checked = _config.SpeakerNameClearSlide;
 
                 //finally enable the save button
                 btnSave.Enabled = true;
@@ -202,6 +206,7 @@ namespace ProPresenterRemote
             _config.SpeakerNameLibrary = (ItemData)cboSpeakerLibrary.SelectedItem;
             _config.SpeakerNameLook = (ItemData)cboSpeakerLook.SelectedItem;
             _config.SpeakerNamePresentation = (ItemData)cboSpeakerPresentation.SelectedItem;
+            _config.SpeakerNameClearSlide = cbClearSlideAfterSpeaker.Checked;
 
             //save the config 
             Config.WriteConfig(_config);
@@ -245,5 +250,6 @@ namespace ProPresenterRemote
                 }
             }
         }
+
     }
 }
