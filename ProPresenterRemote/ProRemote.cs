@@ -41,10 +41,12 @@ namespace ProPresenterRemote
             {
                 settingsToolStripMenuItem_Click(sender, e);
             }
-
+         
+        }
+        private void ProRemote_Shown(object sender, EventArgs e)
+        {
             //run a "get version" command, to check connectivity...
             RunAndWait($"http://{_config.Ip}:{_config.Port}/version");
-
         }
         private void ProRemote_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -196,6 +198,6 @@ namespace ProPresenterRemote
             Size = Properties.Settings.Default.MainFormSize;
         }
 
-
+      
     }
 }

@@ -129,6 +129,7 @@
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProRemote_FormClosing);
             this.Load += new System.EventHandler(this.ProRemoteForm_Load);
+            this.Shown += new System.EventHandler(this.ProRemote_Shown);
             this.contextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
