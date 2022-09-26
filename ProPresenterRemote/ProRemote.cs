@@ -18,6 +18,7 @@ namespace ProPresenterRemote
     {
 
         private static readonly HttpClient Client = new HttpClient();
+        
         private bool _pipOn = false;
         private bool _beforeServiceOn = false;
         private bool _speakerNameOn = false;
@@ -126,6 +127,12 @@ namespace ProPresenterRemote
                 // run the speaker name animation...
                 //change the look 
                 RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/look/{_config.SpeakerNameLook.Uuid}/trigger");
+
+                //clear the slide, if configured
+                if (_config.SpeakerNameClearSlide)
+                {
+                    RunAndWait($"http://{_config.Ip}:{_config.Port}/v1/clear/layer/slide");
+                }
 
                 MessageBox.Show(@"Put 'on air' on now");
 

@@ -255,9 +255,9 @@
             this.cbClearSlideAfterSpeaker.AutoSize = true;
             this.cbClearSlideAfterSpeaker.Location = new System.Drawing.Point(27, 416);
             this.cbClearSlideAfterSpeaker.Name = "cbClearSlideAfterSpeaker";
-            this.cbClearSlideAfterSpeaker.Size = new System.Drawing.Size(220, 17);
+            this.cbClearSlideAfterSpeaker.Size = new System.Drawing.Size(256, 17);
             this.cbClearSlideAfterSpeaker.TabIndex = 9;
-            this.cbClearSlideAfterSpeaker.Text = "Clear Slide After Speaker Name Removal";
+            this.cbClearSlideAfterSpeaker.Text = "Clear Slide Before/After Speaker Name Removal";
             this.cbClearSlideAfterSpeaker.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
