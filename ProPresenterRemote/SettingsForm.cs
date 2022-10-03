@@ -56,12 +56,27 @@ namespace ProPresenterRemote
         {
             if (item != null)
             {
+                // name matching used as a backup, in case the ID changes but the name doesnt. This was happening for the speaker library
+                ItemData nameMatchItem = null;
+
                 foreach (var cboItem in combo.Items)
                 {
                     if (((ItemData)cboItem).Uuid == item.Uuid)
                     {
                         combo.SelectedItem = cboItem;
+                        return;
                     }
+
+                    if (((ItemData)cboItem).Name == item.Name)
+                    {
+                        nameMatchItem = (ItemData)cboItem;
+                    }
+
+                }
+                //if we get here, the UUID wasnt matched, lets try for a match on the name
+                if (nameMatchItem != null)
+                {
+                    combo.SelectedItem = nameMatchItem;
                 }
             }
         }
