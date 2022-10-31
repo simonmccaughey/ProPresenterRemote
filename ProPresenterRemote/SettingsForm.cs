@@ -32,6 +32,15 @@ namespace ProPresenterRemote
         }
 
         /**
+         * This method is used to refresh the config (since the libraries api returns a different UUID with every propresenter restart)
+         */
+        public void StartupRefresh()
+        {
+            SettingsForm_Load(null, null);
+            btnSave_Click(null, null);
+        }
+
+        /**
          * Apply the current config to the dialog - selects the combo items etc.
          */
         private void ApplyConfig()

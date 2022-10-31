@@ -48,6 +48,9 @@ namespace ProPresenterRemote
         {
             //run a "get version" command, to check connectivity...
             RunAndWait($"http://{_config.Ip}:{_config.Port}/version");
+            new SettingsForm().StartupRefresh(); 
+            //re-read the config
+            _config = Config.ReadConfig();
         }
         private void ProRemote_FormClosing(object sender, FormClosingEventArgs e)
         {
