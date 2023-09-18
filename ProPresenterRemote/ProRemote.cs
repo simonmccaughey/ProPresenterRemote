@@ -47,7 +47,11 @@ namespace ProPresenterRemote
         private void ProRemote_Shown(object sender, EventArgs e)
         {
             //run a "get version" command, to check connectivity...
-            RunAndWait($"http://{_config.Ip}:{_config.Port}/version");
+            bool startupConnectionTestOk = RunAndWait($"http://{_config.Ip}:{_config.Port}/version");
+            if (!startupConnectionTestOk)
+            {
+                settingsToolStripMenuItem_Click(sender, e);
+            }
             new SettingsForm().StartupRefresh(); 
             //re-read the config
             _config = Config.ReadConfig();
@@ -149,7 +153,7 @@ namespace ProPresenterRemote
             btnSpeakerName.Enabled = true;
         }
 
-        private void RunAndWait(String url)
+        private bool RunAndWait(String url)
         {
             try
             {
@@ -161,8 +165,10 @@ namespace ProPresenterRemote
             catch (HttpRequestException e)
             {
                 Debug.WriteLine($@"Error running request: {url} with exception: {e}");
-                MessageBox.Show($@"Error running request: {url} with exception: {e}");
+                MessageBox.Show($@"Error running request: {url} (has propresenter IP address changed?)");
+                return false;
             }
+            return true;
 
         }
 

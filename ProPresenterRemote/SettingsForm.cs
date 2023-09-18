@@ -26,9 +26,30 @@ namespace ProPresenterRemote
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            InitialiseForm();
+        }
+
+        private bool InitialiseForm()
+        {
             _config = Config.ReadConfig();
-            RefreshPpData();
-            ApplyConfig();
+
+            //need to keep this variable separate, as the event fires when ip address txt is set, clearing the port config variable
+            var configPort = _config.Port;
+
+            txtIPAddress.Text = _config.Ip;
+            txtPort.Text = configPort;
+
+            if (RefreshPpData())
+            {
+                //only apply the config if the settings refresh was successful (if propresenter is not reachable, refresh will fail)
+                ApplyConfig();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         /**
@@ -36,8 +57,11 @@ namespace ProPresenterRemote
          */
         public void StartupRefresh()
         {
-            SettingsForm_Load(null, null);
-            btnSave_Click(null, null);
+            if(InitialiseForm())
+            {
+                //only save on success
+                btnSave_Click(null, null);
+            }
         }
 
         /**
@@ -45,11 +69,6 @@ namespace ProPresenterRemote
          */
         private void ApplyConfig()
         {
-            //need to keep this variable separate, as the event fires when ip address txt is set, clearing the port config variable
-            var configPort = _config.Port;
-
-            txtIPAddress.Text = _config.Ip;
-            txtPort.Text = configPort;
             SetCombo(cboBeforeServiceLook, _config.BeforeServiceLook);
             SetCombo(cboNormalLook, _config.NormalLook);
             SetCombo(cboPIPProp, _config.PipProp);
@@ -92,7 +111,7 @@ namespace ProPresenterRemote
         /** 
          * Get the latest props and looks data from ProPresenter.         
          */
-        private void RefreshPpData()
+        private bool RefreshPpData()
         {
             //disable all the items, in case the request fails.
             cboBeforeServiceProp.Enabled = false;
@@ -105,7 +124,7 @@ namespace ProPresenterRemote
             if (string.IsNullOrEmpty(_config.Ip))
             {
                 // if there is no ip configured, we don't try to reach it
-                return;
+                return false;
             }
             try
             {
@@ -155,8 +174,10 @@ namespace ProPresenterRemote
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show($@"error connecting to ProPresenter: {ex}");
+                MessageBox.Show($@"error connecting to ProPresenter: {ex.Message}");
+                return false;
             }
+            return true;
         }
 
         /**
@@ -246,8 +267,11 @@ namespace ProPresenterRemote
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             btnRefresh.Enabled = false;
-            RefreshPpData();
-            ApplyConfig();
+            if (RefreshPpData())
+            {
+                //only apply if the refresh was successful
+                ApplyConfig();
+            }
             btnRefresh.Enabled = true;
         }
 
