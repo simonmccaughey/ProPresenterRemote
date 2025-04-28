@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ProPresenterRemote.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,11 @@ namespace ProPresenterRemote
 {
     public partial class SettingsForm : Form
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly HttpClient Client = new HttpClient()
+        {
+            Timeout = TimeSpan.FromSeconds(Settings.Default.HttpTimeout)  
+        };
+
         private Config _config = new Config();
 
         public SettingsForm()
@@ -172,9 +177,9 @@ namespace ProPresenterRemote
                 btnSave.Enabled = true;
 
             }
-            catch (HttpRequestException ex)
+            catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException)
             {
-                MessageBox.Show($@"error connecting to ProPresenter: {ex.Message}");
+                MessageBox.Show($@"error connecting to ProPresenter: {e.Message}");
                 return false;
             }
             return true;
