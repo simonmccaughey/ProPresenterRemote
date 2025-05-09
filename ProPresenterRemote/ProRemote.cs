@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ProPresenterRemote.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,8 +18,11 @@ namespace ProPresenterRemote
     public partial class ProRemote : Form
     {
 
-        private static readonly HttpClient Client = new HttpClient();
-        
+        private static readonly HttpClient Client = new HttpClient()
+        {
+            Timeout = TimeSpan.FromSeconds(Settings.Default.HttpTimeout)  
+        };
+
         private bool _pipOn = false;
         private bool _beforeServiceOn = false;
         private bool _speakerNameOn = false;
@@ -162,7 +166,7 @@ namespace ProPresenterRemote
                 
                 Debug.WriteLine("complete: " + task.IsCompleted);
             }
-            catch (HttpRequestException e)
+            catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException)
             {
                 Debug.WriteLine($@"Error running request: {url} with exception: {e}");
                 MessageBox.Show($@"Error running request: {url} (has propresenter IP address changed?)");
